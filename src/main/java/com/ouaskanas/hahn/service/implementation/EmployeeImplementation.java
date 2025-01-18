@@ -6,6 +6,7 @@ import com.ouaskanas.hahn.service.interfaces.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 @Service
 public class EmployeeImplementation implements EmployeeService {
@@ -17,7 +18,7 @@ public class EmployeeImplementation implements EmployeeService {
     public List<Employees> findAll() {
         return employeesRepository.findAll();
     }
-
+    //todo: Exception
     @Override
     public Employees findById(int id) {
         if(!employeesRepository.existsById(id))
@@ -29,6 +30,10 @@ public class EmployeeImplementation implements EmployeeService {
 
     @Override
     public Employees save(Employees employees) {
+        LocalDate today = LocalDate.now();
+        if(employees.getHire_date().isAfter(today)){
+            return null;
+        }
         return employeesRepository.save(employees);
     }
 
@@ -40,9 +45,13 @@ public class EmployeeImplementation implements EmployeeService {
         }
         System.out.println("Employee not found with id " + id);
     }
-
+    //todo: Exception
     @Override
     public Employees update(Employees employees, int id) {
+        LocalDate today = LocalDate.now();
+        if(employees.getHire_date().isAfter(today)){
+            return null;
+        }
         Employees employee = employeesRepository.findById(id).get();
         employee.setName(employees.getName());
         employee.setAdress(employees.getAdress());
